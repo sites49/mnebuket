@@ -31,7 +31,10 @@ header.solid { background: color-mix(in srgb, var(--bg) 88%, transparent); backd
 .bar nav { display: flex; gap: 26px; font-size: 15px }
 .bar nav a, footer a { text-decoration: none; opacity: .8; transition: opacity .2s }
 .bar nav a:hover, footer a:hover { opacity: 1 }
-.logo { font: 600 30px/1 var(--fd); text-decoration: none }
+.logo { font: 600 30px/1 var(--fd); text-decoration: none; transition: opacity .3s }
+/* название уже крупно на первом экране: в шапке оно появляется только после прокрутки */
+.quiet .logo { opacity: 0; pointer-events: none }
+.quiet header.solid .logo { opacity: 1; pointer-events: auto }
 .bar .right { justify-self: end; display: flex; gap: 10px; align-items: center }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 24px; border-radius: var(--r); border: 1px solid var(--acc);
@@ -49,7 +52,7 @@ header.solid { background: color-mix(in srgb, var(--bg) 88%, transparent); backd
 .stage::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; z-index: -1; background: linear-gradient(transparent, var(--bg)) }
 .hero { padding-top: clamp(48px, 8vw, 120px) }
 .hero h1 { font-weight: 500; font-family: var(--fd) }
-.hero-top { position: relative; --big: clamp(96px, 19vw, 300px) }
+.hero-top { position: relative; --big: clamp(min(96px, 28vw), 19vw, 300px) }
 .hero h1 .big { display: block; font-size: var(--big); line-height: .82; letter-spacing: -.04em; text-transform: uppercase; font-weight: 600 }
 .hero h1 .sub { display: block; font-size: clamp(34px, 5.4vw, 86px); line-height: 1; font-style: italic; color: var(--acc2); margin: .25em 0 0 clamp(0px, 22vw, 330px); letter-spacing: -.01em }
 /* кнопки под подзаголовком с тем же отступом; размер растёт вместе с заголовком, наехать некуда */
@@ -180,12 +183,12 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
   .band { gap: 8px; padding-bottom: 24px } .band figure:nth-child(2) { transform: translateY(24px) }
   .row { grid-template-columns: 72px minmax(0, 1fr); gap: 4px 16px; padding: 18px 0 }
   .row img { grid-row: span 3; width: 72px; height: 90px }
-  .row .no { display: none } .row .from { text-align: left } .row:hover h3 { transform: none }
+  .row .no { display: none } .row h3 { font-size: min(7.4vw, 28px); overflow-wrap: anywhere } .row .from { text-align: left } .row:hover h3 { transform: none }
   .mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 44vw }
   .mosaic figure:first-child { grid-row: span 1 }
   .acc { grid-template-columns: 1fr } .acc > div + div { border-top: 0 }
   .steps { grid-template-columns: 1fr }
-  .contact .wrap { grid-template-columns: minmax(0, 1fr) } .contact dl { grid-template-columns: minmax(0, auto) minmax(0, 1fr) }
+  .contact .wrap { grid-template-columns: minmax(0, 1fr) } .contact address { font-size: min(10.5vw, 44px) } .contact dl { grid-template-columns: minmax(0, auto) minmax(0, 1fr) }
   .map, .map .leaflet-container { min-height: 320px }
   .fab { display: grid }
 }
