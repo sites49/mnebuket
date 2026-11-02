@@ -107,7 +107,7 @@ summary i::before, summary i::after { content: ""; position: absolute; inset: 50
 summary i::after { transform: translate(-50%, -50%) rotate(90deg) }
 details[open] summary i { transform: rotate(45deg) }
 .pl { padding: 0 0 18px }
-.pl button { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 16px; width: 100%; align-items: baseline; padding: 9px 0; background: none; border: 0;
+.pl button { display: grid; grid-template-columns: minmax(0, 1fr) 124px; gap: 16px; width: 100%; align-items: baseline; padding: 9px 0; background: none; border: 0;
   color: inherit; font: inherit; font-size: 16px; cursor: pointer; text-align: left }
 .pl button b { font-weight: 600; white-space: nowrap; text-align: right }
 .pl button:hover span { color: var(--acc) }
@@ -122,7 +122,7 @@ details[open] summary i { transform: rotate(45deg) }
 
 /* контакты: крупный адрес слева, карта справа */
 .contact { margin-top: clamp(72px, 9vw, 128px); background: var(--paper); padding: clamp(56px, 7vw, 96px) 0 }
-.contact .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 4vw, 64px); align-items: stretch }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); align-items: stretch }
 .contact address { font: 500 clamp(44px, 5.6vw, 92px)/.98 var(--fd); font-style: normal; letter-spacing: -.02em }
 .contact dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 28px; margin: 36px 0; font-size: 18px }
 .contact dt { color: var(--muted) }
@@ -185,7 +185,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
   .mosaic figure:first-child { grid-row: span 1 }
   .acc { grid-template-columns: 1fr } .acc > div + div { border-top: 0 }
   .steps { grid-template-columns: 1fr }
-  .contact .wrap { grid-template-columns: 1fr }
+  .contact .wrap { grid-template-columns: minmax(0, 1fr) } .contact dl { grid-template-columns: minmax(0, auto) minmax(0, 1fr) }
   .map, .map .leaflet-container { min-height: 320px }
   .fab { display: grid }
 }
