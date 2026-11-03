@@ -49,8 +49,35 @@ header.solid { background: color-mix(in srgb, var(--bg) 88%, transparent); backd
 /* первый экран: размытое тёмное фото, двигается медленнее страницы и уходит в ровный фон */
 .stage { position: relative; overflow: hidden; padding-top: 72px }
 .stage .blur { position: absolute; inset: -12% 0 auto; height: 124%; background: center / cover no-repeat; z-index: -1; will-change: transform }
+/* живой фон: два мягких пятна акцентного цвета медленно плавают, сверху плёночное зерно */
+.stage .glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden }
+.stage .glow::before, .stage .glow::after { content: ""; position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(60px);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--acc) 60%, transparent), transparent); mix-blend-mode: soft-light }
+.stage .glow::before { left: -15vmax; top: -10vmax; animation: drift 22s ease-in-out infinite alternate }
+.stage .glow::after { right: -20vmax; bottom: -25vmax; animation: drift 28s ease-in-out infinite alternate-reverse; opacity: .7 }
+@keyframes drift { to { transform: translate(18vmax, 12vmax) scale(1.15) } }
+.stage .mesh { position: absolute; inset: -10%; z-index: -1; pointer-events: none; filter: blur(70px) saturate(1.1); opacity: .9 }
+.stage .mesh i { position: absolute; border-radius: 50%; width: 75vmax; height: 75vmax }
+.stage .mesh i:nth-child(1) { background: radial-gradient(closest-side, var(--m1), transparent); left: -10vmax; top: -15vmax; animation: m1 26s ease-in-out infinite alternate }
+.stage .mesh i:nth-child(2) { background: radial-gradient(closest-side, var(--m2), transparent); right: -15vmax; top: 5vmax; animation: m2 32s ease-in-out infinite alternate }
+.stage .mesh i:nth-child(3) { background: radial-gradient(closest-side, var(--m3), transparent); left: 20vmax; bottom: -30vmax; animation: m1 38s ease-in-out infinite alternate-reverse }
+@keyframes m1 { to { transform: translate(22vmax, 14vmax) scale(1.2) } }
+@keyframes m2 { to { transform: translate(-26vmax, 10vmax) scale(.85) } }
+.stage canvas.silk { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none }
+@media (prefers-reduced-motion: reduce) { .stage .mesh i { animation: none } }
+.stage .grain { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .14; mix-blend-mode: overlay; background-size: 180px }
+@media (prefers-reduced-motion: reduce) { .stage .glow::before, .stage .glow::after { animation: none } }
 .stage::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; z-index: -1; background: linear-gradient(transparent, var(--bg)) }
 .hero { padding-top: clamp(48px, 8vw, 120px) }
+/* вариант по центру: экран целиком, название и подпись посередине, без фото */
+.center .stage { min-height: 100svh; display: grid; align-items: center; padding-bottom: 72px }
+.center .hero { padding-top: 0; text-align: center }
+.center .hero h1 .sub { margin-left: 0 }
+.center .hero-top .cta { justify-content: center }
+.center .hero h1 .big { letter-spacing: .02em }
+.center .stage::after { height: 30% }
+.center .band { display: none }
+.big .w { display: inline }
 .hero h1 { font-weight: 500; font-family: var(--fd) }
 .hero-top { position: relative; --big: clamp(min(96px, 28vw), 19vw, 300px) }
 .hero h1 .big { display: block; font-size: var(--big); line-height: .82; letter-spacing: -.04em; text-transform: uppercase; font-weight: 600 }
@@ -99,7 +126,7 @@ h2 { font: 500 clamp(44px, 6vw, 92px)/.95 var(--fd); letter-spacing: -.02em; mar
 
 /* цены: разделы в две колонки, цены по правому краю одной колонки */
 .acc { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; align-items: start }
-.acc > div { border-top: 1px solid var(--line) }
+.acc > details:nth-child(-n+2) { border-top: 1px solid var(--line) }
 details { border-bottom: 1px solid var(--line) }
 summary { list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 22px 0; cursor: pointer;
   font: 500 clamp(26px, 2.5vw, 34px)/1.1 var(--fd) }
@@ -179,6 +206,12 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
   .bar { grid-template-columns: auto 1fr; height: 64px } .bar nav { display: none } .bar .right .sq { display: none }
   .stage { padding-top: 64px }
   .hero h1 .sub { margin-left: 0 }
+  /* по центру на телефоне: название в две строки крупно, под кнопками три работы */
+  .center .big .w { display: block } .center .hero h1 .big { font-size: min(27vw, 150px); line-height: .9 }
+  .center .hero h1 .sub { font-size: min(9.4vw, 44px); margin-top: .35em }
+  .center .stage { min-height: 0; padding-top: 104px }
+  .center .hero-top .cta { justify-content: stretch }
+  .center .band { display: grid; margin-top: 36px } .center .band img { transform: none }
   .hero-top .cta { display: grid; gap: 12px; margin-top: 28px } .hero-top .btn { padding: 18px 24px; font-size: 16px } .bar .tel { display: none }
   .band { gap: 8px; padding-bottom: 24px } .band figure:nth-child(2) { transform: translateY(24px) }
   .row { grid-template-columns: 72px minmax(0, 1fr); gap: 4px 16px; padding: 18px 0 }
@@ -186,7 +219,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
   .row .no { display: none } .row h3 { font-size: min(7.4vw, 28px); overflow-wrap: anywhere } .row .from { text-align: left } .row:hover h3 { transform: none }
   .mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 44vw }
   .mosaic figure:first-child { grid-row: span 1 }
-  .acc { grid-template-columns: 1fr } .acc > div + div { border-top: 0 }
+  .acc { grid-template-columns: 1fr } .acc > details:nth-child(2) { border-top: 0 }
   .steps { grid-template-columns: 1fr }
   .contact .wrap { grid-template-columns: minmax(0, 1fr) } .contact address { font-size: min(10.5vw, 44px) } .contact dl { grid-template-columns: minmax(0, auto) minmax(0, 1fr) }
   .map, .map .leaflet-container { min-height: 320px }
@@ -194,7 +227,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
 }
 </style>
 </head>
-<body>
+<body class="">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.5 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.4 14c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.2-.7-2.7-1.1-4.4-3.9-4.6-4.1-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.2 1.6 1.9 1.1 1 2 1.3 2.3 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4Z"/></symbol>
   <symbol id="i-tg" viewBox="0 0 24 24"><path d="m21.9 4.4-3.2 15c-.2 1.1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.4-.1-.6-.6-.2l-11 6.9-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.7.2 1.4 1.4Z"/></symbol>
@@ -210,7 +243,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
   <div class="stage"><div class="blur" id="blur" style="background-image:url(img/bg.jpg)"></div>
     <div class="wrap hero">
       <div class="hero-top">
-        <h1><span class="big">Цветы</span><span class="sub">с&nbsp;доставкой в&nbsp;Магадане</span></h1>
+        <h1><span class="big"><span class="w">Цветы</span></span><span class="sub">с&nbsp;доставкой в&nbsp;Магадане</span></h1>
         <div class="cta"><a class="btn" href="https://wa.me/79086084444" target="_blank" rel="noopener"><svg class="ico"><use href="#i-wa"/></svg>Заказать в WhatsApp</a><a class="btn ghost" href="tel:+79086084444">+7 908 608-44-44</a></div>
       </div>
       <div class="band up"><figure><img src="img/b0.jpg" alt="Розовые розы"></figure><figure><img src="img/b1.jpg" alt="Хризантемы"></figure><figure><img src="img/b2.jpg" alt="Букет с эвкалиптом"></figure></div>
@@ -230,8 +263,10 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px }
       <span class="from">от 2 490 ₽</span></button><button class="row up" type="button" data-book="Открытки и игрушки">
       <span class="no">6</span><img src="img/r5.jpg" alt="" loading="lazy"><h3>Открытки и игрушки</h3><p>Открытки, топперы, мягкие игрушки к букету.</p>
       <span class="from">от 50 ₽</span></button></div></div></section>
+  
   <section id="studio"><div class="wrap"><h2 class="up">Магазин</h2><div class="mosaic"><figure class="up"><img src="img/m0.jpg" alt="Флорист с готовым букетом" loading="lazy"><figcaption>Флорист с готовым букетом</figcaption></figure><figure class="up"><img src="img/m1.jpg" alt="Розовые хризантемы с эвкалиптом" loading="lazy"><figcaption>Розовые хризантемы с эвкалиптом</figcaption></figure><figure class="up"><img src="img/m2.jpg" alt="Витрина магазина" loading="lazy"><figcaption>Витрина магазина</figcaption></figure><figure class="up"><img src="img/m3.jpg" alt="Букет красных роз" loading="lazy"><figcaption>Букет красных роз</figcaption></figure><figure class="up"><img src="img/m4.jpg" alt="Сезонный микс с каллами" loading="lazy"><figcaption>Сезонный микс с каллами</figcaption></figure></div></div></section>
-  <section id="prices"><div class="wrap"><h2 class="up">Цены</h2><div class="acc"><div><details open><summary>Букеты<i></i></summary><div class="pl"><button type="button" data-book="Хризантема антонов"><span>Хризантема антонов</span><b>1 490 ₽</b></button><button type="button" data-book="5 кустовых хризантем"><span>5 кустовых хризантем</span><b>2 000 ₽</b></button><button type="button" data-book="7 кустовых хризантем"><span>7 кустовых хризантем</span><b>2 990 ₽</b></button><button type="button" data-book="Гортензия, диантус"><span>Гортензия, диантус</span><b>3 990 ₽</b></button><button type="button" data-book="Эустома, хризантема, диантус"><span>Эустома, хризантема, диантус</span><b>9 990 ₽</b></button></div></details><details open><summary>Розы<i></i></summary><div class="pl"><button type="button" data-book="9 французских роз с эвкалиптом"><span>9 французских роз с эвкалиптом</span><b>3 990 ₽</b></button><button type="button" data-book="Розы и диантусы"><span>Розы и диантусы</span><b>3 800 ₽</b></button><button type="button" data-book="Розы с рускусом"><span>Розы с рускусом</span><b>7 200 ₽</b></button><button type="button" data-book="35 роз Эквадор, 50 см"><span>35 роз Эквадор, 50 см</span><b>10 900 ₽</b></button><button type="button" data-book="51 роза Эквадор, 50 см"><span>51 роза Эквадор, 50 см</span><b>15 000 ₽</b></button></div></details></div><div><details open><summary>В коробке<i></i></summary><div class="pl"><button type="button" data-book="Гипсофила"><span>Гипсофила</span><b>3 490 ₽</b></button><button type="button" data-book="Розы, эустома, хризантемы"><span>Розы, эустома, хризантемы</span><b>4 000 ₽</b></button><button type="button" data-book="Гербера, роза, эвкалипт"><span>Гербера, роза, эвкалипт</span><b>5 000 ₽</b></button><button type="button" data-book="Французские розы"><span>Французские розы</span><b>5 500 ₽</b></button><button type="button" data-book="Кустовая хризантема"><span>Кустовая хризантема</span><b>6 600 ₽</b></button></div></details><details open><summary>К букету<i></i></summary><div class="pl"><button type="button" data-book="Открытка мини"><span>Открытка мини</span><b>50 ₽</b></button><button type="button" data-book="Открытка"><span>Открытка</span><b>70 ₽</b></button><button type="button" data-book="Топпер"><span>Топпер</span><b>90 ₽</b></button><button type="button" data-book="Открытка ручной работы"><span>Открытка ручной работы</span><b>350 ₽</b></button><button type="button" data-book="Игрушка зайка"><span>Игрушка зайка</span><b>2 000 ₽</b></button></div></details></div></div></div></section>
+  
+  <section id="prices"><div class="wrap"><h2 class="up">Цены</h2><div class="acc"><details open><summary>Букеты<i></i></summary><div class="pl"><button type="button" data-book="Хризантема антонов"><span>Хризантема антонов</span><b>1 490 ₽</b></button><button type="button" data-book="5 кустовых хризантем"><span>5 кустовых хризантем</span><b>2 000 ₽</b></button><button type="button" data-book="7 кустовых хризантем"><span>7 кустовых хризантем</span><b>2 990 ₽</b></button><button type="button" data-book="Гортензия, диантус"><span>Гортензия, диантус</span><b>3 990 ₽</b></button><button type="button" data-book="Эустома, хризантема, диантус"><span>Эустома, хризантема, диантус</span><b>9 990 ₽</b></button></div></details><details open><summary>Розы<i></i></summary><div class="pl"><button type="button" data-book="9 французских роз с эвкалиптом"><span>9 французских роз с эвкалиптом</span><b>3 990 ₽</b></button><button type="button" data-book="Розы и диантусы"><span>Розы и диантусы</span><b>3 800 ₽</b></button><button type="button" data-book="Розы с рускусом"><span>Розы с рускусом</span><b>7 200 ₽</b></button><button type="button" data-book="35 роз Эквадор, 50 см"><span>35 роз Эквадор, 50 см</span><b>10 900 ₽</b></button><button type="button" data-book="51 роза Эквадор, 50 см"><span>51 роза Эквадор, 50 см</span><b>15 000 ₽</b></button></div></details><details open><summary>В коробке<i></i></summary><div class="pl"><button type="button" data-book="Гипсофила"><span>Гипсофила</span><b>3 490 ₽</b></button><button type="button" data-book="Розы, эустома, хризантемы"><span>Розы, эустома, хризантемы</span><b>4 000 ₽</b></button><button type="button" data-book="Гербера, роза, эвкалипт"><span>Гербера, роза, эвкалипт</span><b>5 000 ₽</b></button><button type="button" data-book="Французские розы"><span>Французские розы</span><b>5 500 ₽</b></button><button type="button" data-book="Кустовая хризантема"><span>Кустовая хризантема</span><b>6 600 ₽</b></button></div></details><details open><summary>К букету<i></i></summary><div class="pl"><button type="button" data-book="Открытка мини"><span>Открытка мини</span><b>50 ₽</b></button><button type="button" data-book="Открытка"><span>Открытка</span><b>70 ₽</b></button><button type="button" data-book="Топпер"><span>Топпер</span><b>90 ₽</b></button><button type="button" data-book="Открытка ручной работы"><span>Открытка ручной работы</span><b>350 ₽</b></button><button type="button" data-book="Игрушка зайка"><span>Игрушка зайка</span><b>2 000 ₽</b></button></div></details></div></div></section>
   <section id="how"><div class="wrap"><h2 class="up">Как заказать</h2><div class="steps"><div class="step up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/></svg><h3>Выберите букет</h3><p>Из каталога или опишите повод и бюджет.</p></div><div class="step up"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 8"/></svg><h3>Согласуем детали</h3><p>Пришлём фото, уточним время и адрес.</p></div><div class="step up"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="1.5"/><path d="M12 9v12M3 13h18M12 9C10 4 6 5 7.5 7.5 8.3 8.8 12 9 12 9Zm0 0c2-5 6-4 4.5-1.5C15.7 8.8 12 9 12 9Z"/></svg><h3>Получите заказ</h3><p>Заберите на Парковой, 2 или закажите доставку.</p></div></div></div></section>
   <div class="contact" id="contacts"><div class="wrap">
     <div>
@@ -265,11 +300,38 @@ const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let ticking = false;
 const onScroll = () => {
   hdr.classList.toggle("solid", scrollY > 30);
-  if (!still && scrollY < innerHeight * 2) blur.style.transform = `translate3d(0, ${scrollY * .3}px, 0)`;
+  if (blur && !still && scrollY < innerHeight * 2) blur.style.transform = `translate3d(0, ${scrollY * .3}px, 0)`;
   ticking = false;
 };
 addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll) } }, { passive: true });
 onScroll();
+// шёлк: тонкие линии волнами, похоже на пряди, но абстрактно; рисуется только когда первый экран виден
+const silk = document.getElementById("silk");
+if (silk) {
+  const ctx = silk.getContext("2d"), col = getComputedStyle(document.documentElement).getPropertyValue("--acc").trim();
+  let W = 0, Hh = 0, on = true, t0 = performance.now();
+  const size = () => { const r = silk.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); W = r.width; Hh = r.height; silk.width = W * d; silk.height = Hh * d; ctx.setTransform(d, 0, 0, d, 0, 0) };
+  const N = 34;
+  const draw = now => {
+    const t = still ? 0 : (now - t0) / 1000;
+    ctx.clearRect(0, 0, W, Hh);
+    for (let i = 0; i < N; i++) {
+      const k = i / N, base = Hh * (.18 + k * .7), amp = Hh * (.06 + .05 * Math.sin(i * 1.7));
+      ctx.beginPath();
+      for (let x = -20; x <= W + 20; x += 14) {
+        const u = x / W;
+        const y = base + Math.sin(u * 5.2 + t * .35 + i * .21) * amp + Math.sin(u * 11 - t * .22 + i * .5) * amp * .35 + Math.sin(u * 2.1 + t * .12) * Hh * .08;
+        x < 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = col; ctx.globalAlpha = .1 + .38 * Math.pow(Math.sin(k * Math.PI), 2); ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+    if (on && !still) requestAnimationFrame(draw);
+  };
+  size(); addEventListener("resize", () => { size(); if (still) draw(0) });
+  if ("IntersectionObserver" in window) new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !on) { on = true; requestAnimationFrame(draw) } on = v }).observe(silk);
+  requestAnimationFrame(draw);
+}
 const PHONE = "+7 908 608-44-44";
 if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
   const toast = Object.assign(document.createElement("div"), { className: "toast", role: "status" });
